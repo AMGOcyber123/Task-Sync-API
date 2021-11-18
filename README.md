@@ -5,3 +5,5 @@ This is a well structurized task-handling API. A new user can create his profile
 
 ## Installation
 ````npm install ````
+> npm modules used:
+> 
