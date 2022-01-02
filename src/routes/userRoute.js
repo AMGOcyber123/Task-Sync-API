@@ -2,19 +2,25 @@ const express = require('express')
 const User = require('../model/user')
 const jwt = require('jsonwebtoken')
 const auth = require('../Middleware/authentication')
+const multer = require('multer')
+const sharp = require('sharp')
+const { sendEmail,cancelEmail } = require('../email/account')
+const dotenv = require('dotenv')
+dotenv.config();
 
 const router = new express.Router()
 
-router.post('/users', async (req, res) => {
+// -----------------------------------Create user ------------------------------------------//
+
+router.post('/user', async (req, res) => {
     const user = new User(req.body)
-    try
-    {
-        const user = new User(req.body)
+    try {
         await user.save()
-        res.status(201).send(user)
+        sendEmail(user.email, user.name)
+        const token = await user.generateAuthToken()
+        res.status(201).send({user,token})
     }
-    catch(e)  
-    {
+    catch (e) {
         res.status(400).send(e)
     }
 })
@@ -26,11 +32,60 @@ router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        // res.send({ user: user.getPublicProfile(), token })
         res.send({ user, token })
     } catch (e) {
         res.status(400).send(`Can't Login !`)
     }
+})
+
+
+// ---------------------------- Profile Picture -------------------------------------------//
+
+const upload = multer({
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, check) {
+        let test = file.originalname.match('/.pdf|.jpeg|.jpg|.png|.jpg/')
+        if (!test) {
+            return check(new Error('Please upload in PDF/ JPEG/ JPG/ PNG format !'))
+        }
+        check(undefined, true)
+    }
+})
+
+
+router.post('/user/me/upload',auth ,upload.single('avatar'), async (req, res) => {
+    const buffer = await sharp(req.file.buffer).resize({width: 250, height:250}).png().toBuffer()
+    req.user.avatar = buffer
+    await req.user.save()
+    res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({ error: error.message }) // sends the actual error 
+})
+
+
+router.get('/user/:id/avatar' , async(req,res) =>{
+    try
+    {
+        const user = await User.findById(req.params.id)
+        if(!user || !user.avatar)
+        {
+            throw new Error()
+        }
+        res.set('Content-Type', 'image/png')
+        res.send(user.avatar)
+    }
+    catch(e)
+    {
+        res.status(404).send(e)
+    }
+})
+
+router.delete('/user/me/upload', auth, async(req,res) =>{
+    req.user.avatar = undefined
+    await req.user.save()
+    res.send()
 })
 
 
@@ -119,18 +174,19 @@ router.patch('/users/change/me', auth ,async (req, res) => {
 
 // ----------------------------------- Delete User profile -----------------------------------------//
 
-router.delete('/users/remove/me', auth ,async (req, res) => {
-    try
-    {
-        await req.user.remove()
+router.delete('/user/remove/me', auth, async (req, res) => {
+    const user = req.user
+    try {
+        await user.remove()
+        cancelEmail(user.email,user.name)
         res.send(req.user)
     }
-    catch(e)
-    {
+    catch (e) {
         console.log(e)
         return res.status(500).send('Server Error')
     }
 
 })
+
 
 module.exports = router
