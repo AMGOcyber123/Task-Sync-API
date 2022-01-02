@@ -10,6 +10,9 @@ This is a well structurized task-handling API. A new user can create his profile
 > Jsonwebtoken <br>
 > Bcrypt <br>
 > Mongoose <br>
+> Sharp <br>
+> DOTENV <br>
+> Multer
 
 For this API, mongodb, a type of NOSQL is used and a default database connection link is already present unless, you have your personal connection link for the database.
 
