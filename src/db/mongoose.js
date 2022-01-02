@@ -1,5 +1,8 @@
 const mongoose = require('mongoose')
-const link = 'mongodb://127.0.0.1:27017/task-manager-api' || process.env.DB_URI
+const dotenv = require('dotenv')
+dotenv.config();
+
+const link = process.env.DB_URI
 mongoose.connect(link, {
     useNewUrlParser: true,
     useCreateIndex: true,
