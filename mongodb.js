@@ -1,6 +1,3 @@
-// CRUD create read update delete
-//to get the timestamp getTimeStamp()
-
 const mongodb = require('mongodb')
 const connectionURL = 'mongodb://127.0.0.1:27017'
 const  {MongoClient , ObjectId} = require('mongodb')
