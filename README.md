@@ -55,3 +55,5 @@ This section should list any major frameworks that you built your project using.
 > DOTENV <br>
 > Multer <br>
 > SendGrid
+
+Since this is a public repository, DEVS coming up with new updation or addition features to current API would be higly appreciated 😁 
