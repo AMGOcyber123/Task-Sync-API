@@ -25,7 +25,7 @@ This is a well structurized task-handling API. A new user can create his profile
 5.  
 
 
-**A user once logins in, only then, can access their tasks and perfom all CRUD operations. 
+** A user once logins in, only then, can access their tasks and perfom all CRUD operations. 
 
 
 ### Built With
