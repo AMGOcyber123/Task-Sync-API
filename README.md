@@ -25,10 +25,10 @@ This is a well structurized task-handling API. A new user can create his profile
 5.  Developers are expected to have an account in [SendGrid](https://app.sendgrid.com/), in order to get API key.
 
 
-# A user once logins in, only then, can access their tasks and perfom all CRUD operations. 
+### A user once logins in, only then, can access their tasks and perfom all CRUD operations. 
 
 
-### Built With
+## Built With
 
 This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 * [Node js](https://nodejs.dev/)
